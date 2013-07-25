@@ -1,15 +1,15 @@
 <?php
 /*
-Plugin Name: CF Popup Plugin
+Plugin Name: CF Popup
 Plugin URI: http://crowdfavorite.com/
 Description: This allows customized settings under "CF Popup" for logic on when to show this popup.
-Version: 0.2.1
+Version: 0.3
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com/
 */
 
 class CF_Popup {
-	static $ver = '0.2.1';
+	static $ver = '0.3';
 	static $i = null;
 	public static function i() {
 		if (self::$i == null) {
