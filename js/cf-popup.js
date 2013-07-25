@@ -1,4 +1,8 @@
 (function($){
+	// Don't run this on iOS. It appears to crash these devices running Mobile Safari currently.
+	if (navigator.userAgent.match(/[\W]i(pad|phone|pod)[\W]/i)) {
+	        return;
+	}
 	cfPopup = {
 		showWhen : _cfPopup.showWhen,
 		interval : parseInt(_cfPopup.interval, 10), // in days
