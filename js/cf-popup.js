@@ -21,7 +21,7 @@
 		},
 		showPopup : function() {
 			$.colorbox({
-				html : cfPopup.hiddenDiv.html(),
+				html : cfPopup.hiddenDiv.data('content'),
 				overlayClose : false
 			});
 		},

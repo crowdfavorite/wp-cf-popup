@@ -305,8 +305,8 @@ class CF_Popup {
 			data-post-type="<?php echo esc_attr(get_post_type()); ?>"
 			data-categories="<?php echo esc_attr(implode(' ', $categories)); ?>"
 			data-bodyClasses="<?php echo esc_attr(implode(' ', get_body_class())); ?>"
-			>
-			<?php echo $this->get_setting('content'); ?>
+			data-content="<?php echo esc_attr($this->get_setting('content')); ?>"
+			>&nbsp;
 		</div>
 		<?php
 	}
