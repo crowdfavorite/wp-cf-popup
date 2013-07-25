@@ -1,0 +1,14 @@
+# CF Popup Plugin CHANGELOG
+
+## 0.2.1
+
+- Adding Changelog
+
+## 0.2
+
+- Rewrote plugin to be self-contained with JS library of Colorbox
+- Allows for selecting category, post type, or single page IDs for display logic
+
+## 0.1
+
+- Initial release, dependent on client's HTML and JS
