@@ -1,5 +1,11 @@
 # CF Popup Plugin CHANGELOG
 
+## 0.3
+
+- Don't run on iOS devices, memory crash with them
+- preventing premature evaluation of ad content, by sticking it in a data attr
+- CSS change to ensure we're above everything
+
 ## 0.2.1
 
 - Adding Changelog
