@@ -105,14 +105,12 @@
 			return cfPopup.secondaryWaitTime;
 		},
 		setTimer : function() {
-			console.log('setting main timer');
 			cfPopup.timer = window.setTimeout(
 				cfPopup.maybeShowPopup,
 				cfPopup.getWaitTime() * 1000
 			);
 		},
 		setSecondaryTimer : function() {
-			console.log('setting secondary timer');
 			cfPopup.secondaryTimer = window.setTimeout(
 				cfPopup.maybeShowPopup,
 				cfPopup.getSecondaryWaitTime() * 1000

@@ -29,8 +29,6 @@
 			cfPopupAdmin.showRows(cfPopupAdmin.hideOnNevers);
 		},
 		showHideElements : function() {
-			console.log(cfPopupAdmin.showWhenDropdown);
-			console.log('changing: ' + cfPopupAdmin.showWhenDropdown.val());
 			switch (cfPopupAdmin.showWhenDropdown.val()) {
 				case 'enter':
 					cfPopupAdmin.showAllRemainingInputs();
