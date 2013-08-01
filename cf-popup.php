@@ -240,7 +240,7 @@ class CF_Popup {
 			$wait_time = 0;
 		}
 		?>
-		<input name="cf_popup_settings[wait_time]"  id="js_cf_popup_settings__wait_time" value="<?php echo esc_attr($wait_time); ?>"> <?php echo _n('Second', 'Seconds', $wait_time, 'cf_popup'); ?>
+		<input name="cf_popup_settings[wait_time]"  id="js_cf_popup_settings__wait_time" class="js_hide_on_never" value="<?php echo esc_attr($wait_time); ?>"> <?php echo _n('Second', 'Seconds', $wait_time, 'cf_popup'); ?>
 		<p class="help">Number of seconds before the popup appears.</p>
 		<?php
 	}
@@ -251,7 +251,7 @@ class CF_Popup {
 			$content = $settings['content'];
 		}
 		?>
-		<textarea name="cf_popup_settings[content]" style="width: 500px; height: 200px;"><?php echo esc_textarea($content); ?></textarea>
+		<textarea name="cf_popup_settings[content]" class="js_hide_on_never" style="width: 500px; height: 200px;"><?php echo esc_textarea($content); ?></textarea>
 		<?php
 	}
 	public function show_popup_interval_field() {
@@ -261,28 +261,28 @@ class CF_Popup {
 			$interval = $settings['interval'];
 		}
 		?>
-		<input name="cf_popup_settings[interval]" value="<?php echo esc_attr($interval); ?>"> <?php echo _n('Day', 'Days', $interval, 'cf_popup'); ?>
+		<input name="cf_popup_settings[interval]" class="js_hide_on_never" value="<?php echo esc_attr($interval); ?>"> <?php echo _n('Day', 'Days', $interval, 'cf_popup'); ?>
 		<p class="help">Number of days between someone seeing the popup again.</p>
 		<?php
 	}
 	public function show_popup_page_field() {
 		$pages = $this->get_setting('pages');
 		?>
-		<input name="cf_popup_settings[pages]" value="<?php echo esc_attr($pages); ?>" type="text" placeholder="all" />
+		<input name="cf_popup_settings[pages]" class="js_hide_on_never" value="<?php echo esc_attr($pages); ?>" type="text" placeholder="all" />
 		<p class="help">Page IDs separated by comma.  Leave empty for all pages.</p>
 		<?php
 	}
 	public function show_popup_categories_field() {
 		$categories = $this->get_setting('categories');
 		?>
-		<input name="cf_popup_settings[categories]" value="<?php echo esc_attr($categories); ?>" type="text" placeholder="any" />
+		<input name="cf_popup_settings[categories]" class="js_hide_on_never" value="<?php echo esc_attr($categories); ?>" type="text" placeholder="any" />
 		<p class="help">Category slugs separated by comma.  Leave empty for any category.  (e.g., uncategorized, video, etc.)</p>
 		<?php
 	}
 	public function show_popup_post_types_field() {
 		$post_types = $this->get_setting('post_types');
 		?>
-		<input name="cf_popup_settings[post_types]" value="<?php echo esc_attr($post_types); ?>" type="text" placeholder="any" />
+		<input name="cf_popup_settings[post_types]" class="js_hide_on_never" value="<?php echo esc_attr($post_types); ?>" type="text" placeholder="any" />
 		<p class="help">Post Types separated by comma.  Leave empty for any post type.  (e.g., post, page, etc.)</p>
 		<?php
 	}
@@ -293,20 +293,20 @@ class CF_Popup {
 			$cookie_name = $settings['cookie_name'];
 		}
 		?>
-		<input name="cf_popup_settings[cookie_name]" value="<?php echo esc_attr($cookie_name); ?>">
+		<input name="cf_popup_settings[cookie_name]" class="js_hide_on_never" value="<?php echo esc_attr($cookie_name); ?>">
 		<?php
 	}
 	public function show_popup_onlinkclick_field() {
 		$$on_link_click = $this->get_setting('on_link_click');
 		?>
-		<input type="checkbox" name="cf_popup_settings[on_link_click]" id="cf_popup_settings_onlinkclick" value="1"<?php checked(1, $$on_link_click); ?> /> <label for="cf_popup_settings_onlinkclick">Display on any <?php echo esc_html(home_url()); ?> link click?</label>
+		<input type="checkbox" name="cf_popup_settings[on_link_click]" id="cf_popup_settings_onlinkclick" class="js_hide_on_never" value="1"<?php checked(1, $$on_link_click); ?> /> <label for="cf_popup_settings_onlinkclick">Display on any <?php echo esc_html(home_url()); ?> link click?</label>
 		<p class="help">Displays the popup when a visitor clicks a link within the <?php echo esc_html(home_url()); ?> domain.</p>
 		<?php
 	}
 	public function show_popup_debug_field() {
 		$debug = $this->get_setting('debug');
 		?>
-		<input type="checkbox" name="cf_popup_settings[debug]" id="cf_popup_settings_debug" value="1"<?php checked(1, $debug); ?> /> <label for="cf_popup_settings_debug">Debug?</label>
+		<input type="checkbox" name="cf_popup_settings[debug]" id="cf_popup_settings_debug" class="js_hide_on_never" value="1"<?php checked(1, $debug); ?> /> <label for="cf_popup_settings_debug">Debug?</label>
 		<p class="help">Ignore the cookie entirely, and show popup at each interaction</p>
 		<?php
 	}
