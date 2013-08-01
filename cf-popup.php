@@ -56,7 +56,6 @@ class CF_Popup {
 				'waitTime' => $this->get_setting('wait_time'),
 				'secondaryWaitTime' => $this->get_setting('secondary_wait_time'),
 				'interval' => $this->get_setting('interval'),
-				'cookieName' => $this->get_setting('cookie_name'),
 				'debug' => $this->get_setting('debug'),
 				'pages' => $this->get_setting('pages'),
 				'categories' => $this->get_setting('categories'),
@@ -188,13 +187,6 @@ class CF_Popup {
 			$settings_section
 		);
 		add_settings_field(
-			'newsletter_popup_cookie_settings', // actual option name
-			__('Cookie Name', 'cf_popup'),
-			array($this, 'show_popup_cookie_field'),
-			$settings_page,
-			$settings_section
-		);
-		add_settings_field(
 			'newsletter_popup_debug_settings', // actual option name
 			__('Debug', 'cf_popup'),
 			array($this, 'show_popup_debug_field'),
@@ -296,16 +288,6 @@ class CF_Popup {
 		?>
 		<input name="cf_popup_settings[post_types]" class="js_hide_on_never" value="<?php echo esc_attr($post_types); ?>" type="text" placeholder="any" />
 		<p class="help">Post Types separated by comma.  Leave empty for any post type.  (e.g., post, page, etc.)</p>
-		<?php
-	}
-	public function show_popup_cookie_field() {
-		$settings = $this->get_settings();
-		$cookie_name = 'cf_popup';
-		if (!empty($settings['cookie_name'])) {
-			$cookie_name = $settings['cookie_name'];
-		}
-		?>
-		<input name="cf_popup_settings[cookie_name]" class="js_hide_on_never" value="<?php echo esc_attr($cookie_name); ?>">
 		<?php
 	}
 	public function show_popup_debug_field() {

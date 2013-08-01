@@ -12,7 +12,7 @@
 		categories : $.trim(_cfPopup.categories) == '' ? [] : _cfPopup.categories.split(','),
 		postTypes : $.trim(_cfPopup.postTypes) == '' ? [] : _cfPopup.postTypes.split(','),
 		hiddenDiv : $('#js-cfpopup-content'),
-		cookieName : _cfPopup.cookieName,
+		cookieName : 'cf_popup_shown',
 		clickedAwayCookieName : 'cf_popup_clickedaway',
 		debug : Math.abs(parseInt(_cfPopup.debug, 10)),
 		doPopupOnLinkClick : Math.abs(parseInt(_cfPopup.popupOnLinkClick, 10)),
