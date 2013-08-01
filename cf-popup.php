@@ -52,6 +52,7 @@ class CF_Popup {
 			'_cfPopup',
 			array(
 				'showWhen' => $this->get_setting('show_when'),
+				'waitTime' => $this->get_setting('wait_time'),
 				'interval' => $this->get_setting('interval'),
 				'cookieName' => $this->get_setting('cookie_name'),
 				'debug' => $this->get_setting('debug'),
@@ -122,6 +123,13 @@ class CF_Popup {
 			'newsletter_popup_when_settings', // actual option name
 			__('Show Popup When?', 'cf_popup'),
 			array($this, 'show_popup_when_field'),
+			$settings_page,
+			$settings_section
+		);
+		add_settings_field(
+			'newsletter_popup_waittime_settings', // actual option name
+			__('Popup Hesitation', 'cf_popup'),
+			array($this, 'show_popup_waittime_field'),
 			$settings_page,
 			$settings_section
 		);
@@ -213,6 +221,16 @@ class CF_Popup {
 			}
 			?>
 		</select>
+		<?php
+	}
+	public function show_popup_waittime_field() {
+		$wait_time = $this->get_setting('wait_time');
+		if (empty($wait_time)) {
+			$wait_time = 0;
+		}
+		?>
+		<input name="cf_popup_settings[wait_time]" value="<?php echo esc_attr($wait_time); ?>"> <?php echo _n('Second', 'Seconds', $wait_time, 'cf_popup'); ?>
+		<p class="help">Number of seconds before the popup appears.</p>
 		<?php
 	}
 	public function show_popup_content_field() {
