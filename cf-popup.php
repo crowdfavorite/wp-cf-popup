@@ -139,7 +139,7 @@ class CF_Popup {
 		);
 		add_settings_field(
 			'newsletter_popup_waittime_settings', // actual option name
-			__('Popup Hesitation', 'cf_popup'),
+			__('Popup Delay', 'cf_popup'),
 			array($this, 'show_popup_waittime_field'),
 			$settings_page,
 			$settings_section
