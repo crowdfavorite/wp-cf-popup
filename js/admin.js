@@ -5,31 +5,27 @@
 			cfPopupAdmin.showWhenDropdown = $('#js_cf_popup_settings__show_when');
 			cfPopupAdmin.waitTimeElems = $('#js_cf_popup_settings__wait_time, #js_cf_popup_settings__secondary_wait_time');
 		},
-		hideRow : function(elem) {
-			elem.parents('tr').first().hide();
+		hideRows : function(elems) {
+			elems.each(function(index) {
+				$(this).parents('tr').first().hide();;
+			});
 		},
-		showRow : function(elem) {
-			elem.parents('tr').first().show();
+		showRows : function(elems) {
+			elems.each(function(index) {
+				$(this).parents('tr').first().show();;
+			});
 		},
 		hideWaitTime : function() {
-			cfPopupAdmin.waitTimeElems.each(function(index) {
-				cfPopupAdmin.hideRow($(this));
-			});
+			cfPopupAdmin.hideRows(cfPopupAdmin.waitTimeElems);
 		},
 		showWaitTime : function() {
-			cfPopupAdmin.waitTimeElems.each(function(index) {
-				cfPopupAdmin.showRow($(this));
-			});
+			cfPopupAdmin.showRows(cfPopupAdmin.waitTimeElems);
 		},
 		hideAllRemainingInputs : function() {
-			$('.js_hide_on_never').each(function(index) {
-				cfPopupAdmin.hideRow($(this));
-			});
+			cfPopupAdmin.hideRows($('.js_hide_on_never'));
 		},
 		showAllRemainingInputs : function() {
-			$('.js_hide_on_never').each(function(index) {
-				cfPopupAdmin.showRow($(this));
-			});
+			cfPopupAdmin.showRows($('.js_hide_on_never'));
 		},
 		showHideElements : function() {
 			console.log(cfPopupAdmin.showWhenDropdown);
