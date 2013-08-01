@@ -3,29 +3,30 @@
 		initProps : function() {
 			cfPopupAdmin.wrapper = $('#wpbody-content');
 			cfPopupAdmin.showWhenDropdown = $('#js_cf_popup_settings__show_when');
-			cfPopupAdmin.waitTimeElem = $('#js_cf_popup_settings__wait_time');
+			cfPopupAdmin.waitTimeElems = $('#js_cf_popup_settings__wait_time, #js_cf_popup_settings__secondary_wait_time');
+			cfPopupAdmin.hideOnNevers = $('.js_hide_on_never');
 		},
-		hideRow : function(elem) {
-			elem.parents('tr').first().hide();
+		hideRows : function(elems) {
+			elems.each(function(index) {
+				$(this).parents('tr').first().hide();;
+			});
 		},
-		showRow : function(elem) {
-			elem.parents('tr').first().show();
+		showRows : function(elems) {
+			elems.each(function(index) {
+				$(this).parents('tr').first().show();;
+			});
 		},
 		hideWaitTime : function() {
-			cfPopupAdmin.hideRow(cfPopupAdmin.waitTimeElem);
+			cfPopupAdmin.hideRows(cfPopupAdmin.waitTimeElems);
 		},
 		showWaitTime : function() {
-			cfPopupAdmin.showRow(cfPopupAdmin.waitTimeElem);
+			cfPopupAdmin.showRows(cfPopupAdmin.waitTimeElems);
 		},
 		hideAllRemainingInputs : function() {
-			$('.js_hide_on_never').each(function(index) {
-				cfPopupAdmin.hideRow($(this));
-			});
+			cfPopupAdmin.hideRows(cfPopupAdmin.hideOnNevers);
 		},
 		showAllRemainingInputs : function() {
-			$('.js_hide_on_never').each(function(index) {
-				cfPopupAdmin.showRow($(this));
-			});
+			cfPopupAdmin.showRows(cfPopupAdmin.hideOnNevers);
 		},
 		showHideElements : function() {
 			console.log(cfPopupAdmin.showWhenDropdown);

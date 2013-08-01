@@ -54,6 +54,7 @@ class CF_Popup {
 			array(
 				'showWhen' => $this->get_setting('show_when'),
 				'waitTime' => $this->get_setting('wait_time'),
+				'secondaryWaitTime' => $this->get_setting('secondary_wait_time'),
 				'interval' => $this->get_setting('interval'),
 				'cookieName' => $this->get_setting('cookie_name'),
 				'debug' => $this->get_setting('debug'),
@@ -139,8 +140,15 @@ class CF_Popup {
 		);
 		add_settings_field(
 			'newsletter_popup_waittime_settings', // actual option name
-			__('Popup Hesitation', 'cf_popup'),
+			__('Popup Delay', 'cf_popup'),
 			array($this, 'show_popup_waittime_field'),
+			$settings_page,
+			$settings_section
+		);
+		add_settings_field(
+			'newsletter_popup_secondary_waittime_settings', // actual option name
+			__('Popup Delay (secondary)', 'cf_popup'),
+			array($this, 'show_popup_secondary_waittime_field'),
 			$settings_page,
 			$settings_section
 		);
@@ -242,6 +250,16 @@ class CF_Popup {
 		?>
 		<input name="cf_popup_settings[wait_time]"  id="js_cf_popup_settings__wait_time" class="js_hide_on_never" value="<?php echo esc_attr($wait_time); ?>"> <?php echo _n('Second', 'Seconds', $wait_time, 'cf_popup'); ?>
 		<p class="help">Number of seconds before the popup appears.</p>
+		<?php
+	}
+	public function show_popup_secondary_waittime_field() {
+		$secondary_wait_time = $this->get_setting('secondary_wait_time');
+		if (empty($secondary_wait_time)) {
+			$secondary_wait_time = 0;
+		}
+		?>
+		<input name="cf_popup_settings[secondary_wait_time]"  id="js_cf_popup_settings__secondary_wait_time" class="js_hide_on_never" value="<?php echo esc_attr($secondary_wait_time); ?>"> <?php echo _n('Second', 'Seconds', $wait_time, 'cf_popup'); ?>
+		<p class="help">Number of seconds before the popup appears on the second page <em>if they navigated away from the first page <strong>before</strong> the popup loaded</em>.  This should typically be shorter than the first delay.</p>
 		<?php
 	}
 	public function show_popup_content_field() {

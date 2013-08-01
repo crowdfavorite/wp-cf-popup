@@ -6,12 +6,14 @@
 	cfPopup = {
 		showWhen : _cfPopup.showWhen,
 		waitTime : _cfPopup.waitTime ? Math.abs(parseInt(_cfPopup.waitTime, 10)) : 0, // in seconds
+		secondaryWaitTime : _cfPopup.secondaryWaitTime ? Math.abs(parseInt(_cfPopup.secondaryWaitTime, 10)) : 0, // in seconds
 		interval : Math.abs(parseInt(_cfPopup.interval, 10)), // in days
 		pages : $.trim(_cfPopup.pages) == '' ? [] : _cfPopup.pages.split(','),
 		categories : $.trim(_cfPopup.categories) == '' ? [] : _cfPopup.categories.split(','),
 		postTypes : $.trim(_cfPopup.postTypes) == '' ? [] : _cfPopup.postTypes.split(','),
 		hiddenDiv : $('#js-cfpopup-content'),
 		cookieName : _cfPopup.cookieName,
+		clickedAwayCookieName : 'cf_popup_clickedaway',
 		debug : Math.abs(parseInt(_cfPopup.debug, 10)),
 		doPopupOnLinkClick : Math.abs(parseInt(_cfPopup.popupOnLinkClick, 10)),
 		domain : _cfPopup.domain,
@@ -22,7 +24,27 @@
 			return ($.cookie(cfPopup.cookieName) === '1');
 		},
 		setPopupCookie : function() {
-			$.cookie(cfPopup.cookieName, '1', { expires: cfPopup.interval, path: '/' });
+			$.cookie(
+				cfPopup.cookieName,
+				'1',
+				{
+					expires: cfPopup.interval,
+					path: '/'
+				}
+			);
+		},
+		hasClickedAwayCookie : function() {
+			return ($.cookie(cfPopup.clickedAwayCookieName) === '1');
+		},
+		setClickedAwayCookie : function() {
+			$.cookie(
+				cfPopup.clickedAwayCookieName,
+				'1',
+				{
+					expires: cfPopup.interval,
+					path: '/'
+				}
+			);
 		},
 		showPopup : function() {
 			$.colorbox({
@@ -79,12 +101,30 @@
 		getWaitTime : function() {
 			return cfPopup.waitTime;
 		},
+		getSecondaryWaitTime : function() {
+			return cfPopup.secondaryWaitTime;
+		},
 		setTimer : function() {
-			console.log(cfPopup.getWaitTime());
+			console.log('setting main timer');
 			cfPopup.timer = window.setTimeout(
 				cfPopup.maybeShowPopup,
 				cfPopup.getWaitTime() * 1000
 			);
+		},
+		setSecondaryTimer : function() {
+			console.log('setting secondary timer');
+			cfPopup.secondaryTimer = window.setTimeout(
+				cfPopup.maybeShowPopup,
+				cfPopup.getSecondaryWaitTime() * 1000
+			);
+		},
+		attachClickedAwayEvents : function() {
+			$(document).on('click', 'a', cfPopup.handleClickedAway);
+		},
+		handleClickedAway : function(e) {
+			e.preventDefault();
+			cfPopup.setClickedAwayCookie();
+			document.location = $(this).attr('href');
 		},
 		init : function() {
 			var n = cfPopup;
@@ -93,7 +133,13 @@
 			}
 
 			if (n.showWhen == 'enter') {
-				n.setTimer();
+				if (n.hasClickedAwayCookie()) {
+					n.setSecondaryTimer();
+				}
+				else {
+					n.setTimer();
+					n.attachClickedAwayEvents();
+				}
 			}
 			else if (n.showWhen == 'exit') {
 				$(document).mouseleave(n.maybeShowPopup);
