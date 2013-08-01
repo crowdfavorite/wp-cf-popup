@@ -3,7 +3,7 @@
 		initProps : function() {
 			cfPopupAdmin.wrapper = $('#wpbody-content');
 			cfPopupAdmin.showWhenDropdown = $('#js_cf_popup_settings__show_when');
-			cfPopupAdmin.waitTimeElem = $('#js_cf_popup_settings__wait_time');
+			cfPopupAdmin.waitTimeElems = $('#js_cf_popup_settings__wait_time, #js_cf_popup_settings__secondary_wait_time');
 		},
 		hideRow : function(elem) {
 			elem.parents('tr').first().hide();
@@ -12,10 +12,14 @@
 			elem.parents('tr').first().show();
 		},
 		hideWaitTime : function() {
-			cfPopupAdmin.hideRow(cfPopupAdmin.waitTimeElem);
+			cfPopupAdmin.waitTimeElems.each(function(index) {
+				cfPopupAdmin.hideRow($(this));
+			});
 		},
 		showWaitTime : function() {
-			cfPopupAdmin.showRow(cfPopupAdmin.waitTimeElem);
+			cfPopupAdmin.waitTimeElems.each(function(index) {
+				cfPopupAdmin.showRow($(this));
+			});
 		},
 		hideAllRemainingInputs : function() {
 			$('.js_hide_on_never').each(function(index) {
