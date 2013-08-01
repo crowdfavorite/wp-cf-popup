@@ -142,9 +142,8 @@
 			else if (n.showWhen == 'exit') {
 				$(document).mouseleave(n.maybeShowPopup);
 			}
-
-			if (n.doPopupOnLinkClick) {
-				$(document).one('click', 'a[href*="' + n.domain + '"]', function(e) {
+			else if (n.showWhen == 'link_click') {
+				$(document).one('click', 'a', function(e) {
 					n.maybeShowPopup();
 					e.preventDefault();
 					return false;

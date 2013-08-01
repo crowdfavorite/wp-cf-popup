@@ -34,12 +34,14 @@
 					cfPopupAdmin.showAllRemainingInputs();
 					cfPopupAdmin.showWaitTime();
 					break;
+				case 'exit':
+				case 'link_click':
+					cfPopupAdmin.showAllRemainingInputs();
+					cfPopupAdmin.hideWaitTime();
+					break;
 				case 'never':
 					cfPopupAdmin.hideAllRemainingInputs();
 					break;
-				case 'exit':
-					cfPopupAdmin.showAllRemainingInputs();
-					cfPopupAdmin.hideWaitTime();
 			}
 		},
 		init : function() {

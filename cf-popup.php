@@ -195,13 +195,6 @@ class CF_Popup {
 			$settings_section
 		);
 		add_settings_field(
-			'newsletter_popup_on_link_click_settings', // actual option name
-			__('Show on Link Click', 'cf_popup'),
-			array($this, 'show_popup_onlinkclick_field'),
-			$settings_page,
-			$settings_section
-		);
-		add_settings_field(
 			'newsletter_popup_debug_settings', // actual option name
 			__('Debug', 'cf_popup'),
 			array($this, 'show_popup_debug_field'),
@@ -224,6 +217,7 @@ class CF_Popup {
 			'never' => 'Never (i.e., Turn Off)',
 			'enter' => 'On Enter',
 			'exit' => 'On Exit',
+			'link_click' => 'On Link Click',
 		);
 		$settings = $this->get_settings();
 		$show_when = 'never';
@@ -312,13 +306,6 @@ class CF_Popup {
 		}
 		?>
 		<input name="cf_popup_settings[cookie_name]" class="js_hide_on_never" value="<?php echo esc_attr($cookie_name); ?>">
-		<?php
-	}
-	public function show_popup_onlinkclick_field() {
-		$$on_link_click = $this->get_setting('on_link_click');
-		?>
-		<input type="checkbox" name="cf_popup_settings[on_link_click]" id="cf_popup_settings_onlinkclick" class="js_hide_on_never" value="1"<?php checked(1, $$on_link_click); ?> /> <label for="cf_popup_settings_onlinkclick">Display on any <?php echo esc_html(home_url()); ?> link click?</label>
-		<p class="help">Displays the popup when a visitor clicks a link within the <?php echo esc_html(home_url()); ?> domain.</p>
 		<?php
 	}
 	public function show_popup_debug_field() {
