@@ -26,6 +26,7 @@ class CF_Popup {
 
 		add_action('admin_menu', array($this, 'register_settings_page'));
 		add_action('admin_init', array($this, 'settings_init'));
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_js'));
 	}
 	public function get_assets() {
 
@@ -71,6 +72,16 @@ class CF_Popup {
 			self::$ver
 		);
 	}
+	public function enqueue_admin_js($page) {
+		if ($page === $this->admin_page_hook) {
+			wp_enqueue_script(
+				'cf_popup_admin',
+				$this->plugin_url . '/js/admin.js',
+				array('jquery'),
+				self::$ver
+			);
+		}
+	}
 	public function get_settings() {
 		return (array) get_option('cf_popup_settings');
 	}
@@ -85,7 +96,7 @@ class CF_Popup {
 
 	public function register_settings_page() {
 		//create new top-level menu
-		add_submenu_page(
+		$this->admin_page_hook = add_submenu_page(
 			'options-general.php',
 			__('CF Popup Settings', 'cf_popup'),
 			__('CF Popup', 'cf_popup'),
@@ -212,7 +223,7 @@ class CF_Popup {
 			$show_when = $settings['show_when'];
 		}
 		?>
-		<select name="cf_popup_settings[show_when]">
+		<select name="cf_popup_settings[show_when]" id="js_cf_popup_settings__show_when">
 			<?php
 			foreach ($options as $val => $friendly) {
 				?>
@@ -229,7 +240,7 @@ class CF_Popup {
 			$wait_time = 0;
 		}
 		?>
-		<input name="cf_popup_settings[wait_time]" value="<?php echo esc_attr($wait_time); ?>"> <?php echo _n('Second', 'Seconds', $wait_time, 'cf_popup'); ?>
+		<input name="cf_popup_settings[wait_time]"  id="js_cf_popup_settings__wait_time" value="<?php echo esc_attr($wait_time); ?>"> <?php echo _n('Second', 'Seconds', $wait_time, 'cf_popup'); ?>
 		<p class="help">Number of seconds before the popup appears.</p>
 		<?php
 	}
