@@ -17,6 +17,7 @@
 		debug : Math.abs(parseInt(_cfPopup.debug, 10)),
 		doPopupOnLinkClick : Math.abs(parseInt(_cfPopup.popupOnLinkClick, 10)),
 		domain : _cfPopup.domain,
+		width : Math.abs(parseInt(_cfPopup.width, 10)),
 		hasCookiePlugin : function() {
 			return (typeof($.cookie) === 'function');
 		},
@@ -47,10 +48,14 @@
 			);
 		},
 		showPopup : function() {
-			$.colorbox({
+			var options = {
 				html : cfPopup.hiddenDiv.data('content'),
 				overlayClose : false
-			});
+			};
+			if (cfPopup.width) {
+				options.width = Math.abs(parseInt(cfPopup.width, 10));
+			}
+			$.colorbox(options);
 		},
 		maybeShowPopup : function() {
 			if (!cfPopup.hasPopupCookie() || cfPopup.debug) {

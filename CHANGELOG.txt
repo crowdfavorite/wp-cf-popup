@@ -6,6 +6,7 @@
 - Changed link clicking to be it's own "show where", so the options are now "enter", "exit", "link_click".  This is instead of having link click be its own special case during enter or exit.
 - Removed ability to set the cookie name -- I don't see anybody using it in practice.
 - Cleaned up some console.log remnants.
+- Added ability to set the width of the popup.
 
 ## 0.3
 

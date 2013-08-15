@@ -55,6 +55,7 @@ class CF_Popup {
 				'showWhen' => $this->get_setting('show_when'),
 				'waitTime' => $this->get_setting('wait_time'),
 				'secondaryWaitTime' => $this->get_setting('secondary_wait_time'),
+				'width' => $this->get_setting('width'),
 				'interval' => $this->get_setting('interval'),
 				'debug' => $this->get_setting('debug'),
 				'pages' => $this->get_setting('pages'),
@@ -159,6 +160,13 @@ class CF_Popup {
 			$settings_section
 		);
 		add_settings_field(
+			'newsletter_popup_width_settings', // actual option name
+			__('Popup Width', 'cf_popup'),
+			array($this, 'show_popup_width_field'),
+			$settings_page,
+			$settings_section
+		);
+		add_settings_field(
 			'newsletter_popup_interval_settings', // actual option name
 			__('Popup Interval', 'cf_popup'),
 			array($this, 'show_popup_interval_field'),
@@ -256,6 +264,13 @@ class CF_Popup {
 		}
 		?>
 		<textarea name="cf_popup_settings[content]" class="js_hide_on_never" style="width: 500px; height: 200px;"><?php echo esc_textarea($content); ?></textarea>
+		<?php
+	}
+	public function show_popup_width_field() {
+		$width = $this->get_setting('width');
+		?>
+		<input name="cf_popup_settings[width]" class="js_hide_on_never" value="<?php echo esc_attr($width); ?>" placeholder="auto-calculate"> <?php echo __('px', 'cf_popup'); ?>
+		<p class="help">Optional.  Width, in pixels, of the popup.  If empty, it will be auto-calculated.</p>
 		<?php
 	}
 	public function show_popup_interval_field() {
