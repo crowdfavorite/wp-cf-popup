@@ -3,13 +3,13 @@
 Plugin Name: CF Popup
 Plugin URI: http://crowdfavorite.com/
 Description: This allows customized settings under "CF Popup" for logic on when to show this popup.
-Version: 0.3
+Version: 0.4
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com/
 */
 
 class CF_Popup {
-	static $ver = '0.3';
+	static $ver = '0.4';
 	static $i = null;
 	public static function i() {
 		if (self::$i == null) {
@@ -26,6 +26,7 @@ class CF_Popup {
 
 		add_action('admin_menu', array($this, 'register_settings_page'));
 		add_action('admin_init', array($this, 'settings_init'));
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_js'));
 	}
 	public function get_assets() {
 
@@ -52,8 +53,10 @@ class CF_Popup {
 			'_cfPopup',
 			array(
 				'showWhen' => $this->get_setting('show_when'),
+				'waitTime' => $this->get_setting('wait_time'),
+				'secondaryWaitTime' => $this->get_setting('secondary_wait_time'),
+				'width' => $this->get_setting('width'),
 				'interval' => $this->get_setting('interval'),
-				'cookieName' => $this->get_setting('cookie_name'),
 				'debug' => $this->get_setting('debug'),
 				'pages' => $this->get_setting('pages'),
 				'categories' => $this->get_setting('categories'),
@@ -70,6 +73,16 @@ class CF_Popup {
 			self::$ver
 		);
 	}
+	public function enqueue_admin_js($page) {
+		if ($page === $this->admin_page_hook) {
+			wp_enqueue_script(
+				'cf_popup_admin',
+				$this->plugin_url . '/js/admin.js',
+				array('jquery'),
+				self::$ver
+			);
+		}
+	}
 	public function get_settings() {
 		return (array) get_option('cf_popup_settings');
 	}
@@ -84,7 +97,7 @@ class CF_Popup {
 
 	public function register_settings_page() {
 		//create new top-level menu
-		add_submenu_page(
+		$this->admin_page_hook = add_submenu_page(
 			'options-general.php',
 			__('CF Popup Settings', 'cf_popup'),
 			__('CF Popup', 'cf_popup'),
@@ -126,9 +139,30 @@ class CF_Popup {
 			$settings_section
 		);
 		add_settings_field(
+			'newsletter_popup_waittime_settings', // actual option name
+			__('Popup Delay', 'cf_popup'),
+			array($this, 'show_popup_waittime_field'),
+			$settings_page,
+			$settings_section
+		);
+		add_settings_field(
+			'newsletter_popup_secondary_waittime_settings', // actual option name
+			__('Popup Delay (secondary)', 'cf_popup'),
+			array($this, 'show_popup_secondary_waittime_field'),
+			$settings_page,
+			$settings_section
+		);
+		add_settings_field(
 			'newsletter_popup_content_settings', // actual option name
 			__('Popup Content', 'cf_popup'),
 			array($this, 'show_popup_content_field'),
+			$settings_page,
+			$settings_section
+		);
+		add_settings_field(
+			'newsletter_popup_width_settings', // actual option name
+			__('Popup Width', 'cf_popup'),
+			array($this, 'show_popup_width_field'),
 			$settings_page,
 			$settings_section
 		);
@@ -161,20 +195,6 @@ class CF_Popup {
 			$settings_section
 		);
 		add_settings_field(
-			'newsletter_popup_cookie_settings', // actual option name
-			__('Cookie Name', 'cf_popup'),
-			array($this, 'show_popup_cookie_field'),
-			$settings_page,
-			$settings_section
-		);
-		add_settings_field(
-			'newsletter_popup_on_link_click_settings', // actual option name
-			__('Show on Link Click', 'cf_popup'),
-			array($this, 'show_popup_onlinkclick_field'),
-			$settings_page,
-			$settings_section
-		);
-		add_settings_field(
 			'newsletter_popup_debug_settings', // actual option name
 			__('Debug', 'cf_popup'),
 			array($this, 'show_popup_debug_field'),
@@ -197,6 +217,7 @@ class CF_Popup {
 			'never' => 'Never (i.e., Turn Off)',
 			'enter' => 'On Enter',
 			'exit' => 'On Exit',
+			'link_click' => 'On Link Click',
 		);
 		$settings = $this->get_settings();
 		$show_when = 'never';
@@ -204,7 +225,7 @@ class CF_Popup {
 			$show_when = $settings['show_when'];
 		}
 		?>
-		<select name="cf_popup_settings[show_when]">
+		<select name="cf_popup_settings[show_when]" id="js_cf_popup_settings__show_when">
 			<?php
 			foreach ($options as $val => $friendly) {
 				?>
@@ -215,6 +236,26 @@ class CF_Popup {
 		</select>
 		<?php
 	}
+	public function show_popup_waittime_field() {
+		$wait_time = $this->get_setting('wait_time');
+		if (empty($wait_time)) {
+			$wait_time = 0;
+		}
+		?>
+		<input name="cf_popup_settings[wait_time]"  id="js_cf_popup_settings__wait_time" class="js_hide_on_never" value="<?php echo esc_attr($wait_time); ?>"> <?php echo _n('Second', 'Seconds', $wait_time, 'cf_popup'); ?>
+		<p class="help">Number of seconds before the popup appears.</p>
+		<?php
+	}
+	public function show_popup_secondary_waittime_field() {
+		$secondary_wait_time = $this->get_setting('secondary_wait_time');
+		if (empty($secondary_wait_time)) {
+			$secondary_wait_time = 0;
+		}
+		?>
+		<input name="cf_popup_settings[secondary_wait_time]"  id="js_cf_popup_settings__secondary_wait_time" class="js_hide_on_never" value="<?php echo esc_attr($secondary_wait_time); ?>"> <?php echo _n('Second', 'Seconds', $wait_time, 'cf_popup'); ?>
+		<p class="help">Number of seconds before the popup appears on the second page <em>if they navigated away from the first page <strong>before</strong> the popup loaded</em>.  This should typically be shorter than the first delay.</p>
+		<?php
+	}
 	public function show_popup_content_field() {
 		$settings = $this->get_settings();
 		$content = '';
@@ -222,7 +263,14 @@ class CF_Popup {
 			$content = $settings['content'];
 		}
 		?>
-		<textarea name="cf_popup_settings[content]" style="width: 500px; height: 200px;"><?php echo esc_textarea($content); ?></textarea>
+		<textarea name="cf_popup_settings[content]" class="js_hide_on_never" style="width: 500px; height: 200px;"><?php echo esc_textarea($content); ?></textarea>
+		<?php
+	}
+	public function show_popup_width_field() {
+		$width = $this->get_setting('width');
+		?>
+		<input name="cf_popup_settings[width]" class="js_hide_on_never" value="<?php echo esc_attr($width); ?>" placeholder="auto-calculate"> <?php echo __('px', 'cf_popup'); ?>
+		<p class="help">Optional.  Width, in pixels, of the popup.  If empty, it will be auto-calculated.</p>
 		<?php
 	}
 	public function show_popup_interval_field() {
@@ -232,52 +280,35 @@ class CF_Popup {
 			$interval = $settings['interval'];
 		}
 		?>
-		<input name="cf_popup_settings[interval]" value="<?php echo esc_attr($interval); ?>"> <?php echo _n('Day', 'Days', $interval, 'cf_popup'); ?>
+		<input name="cf_popup_settings[interval]" class="js_hide_on_never" value="<?php echo esc_attr($interval); ?>"> <?php echo _n('Day', 'Days', $interval, 'cf_popup'); ?>
 		<p class="help">Number of days between someone seeing the popup again.</p>
 		<?php
 	}
 	public function show_popup_page_field() {
 		$pages = $this->get_setting('pages');
 		?>
-		<input name="cf_popup_settings[pages]" value="<?php echo esc_attr($pages); ?>" type="text" placeholder="all" />
+		<input name="cf_popup_settings[pages]" class="js_hide_on_never" value="<?php echo esc_attr($pages); ?>" type="text" placeholder="all" />
 		<p class="help">Page IDs separated by comma.  Leave empty for all pages.</p>
 		<?php
 	}
 	public function show_popup_categories_field() {
 		$categories = $this->get_setting('categories');
 		?>
-		<input name="cf_popup_settings[categories]" value="<?php echo esc_attr($categories); ?>" type="text" placeholder="any" />
+		<input name="cf_popup_settings[categories]" class="js_hide_on_never" value="<?php echo esc_attr($categories); ?>" type="text" placeholder="any" />
 		<p class="help">Category slugs separated by comma.  Leave empty for any category.  (e.g., uncategorized, video, etc.)</p>
 		<?php
 	}
 	public function show_popup_post_types_field() {
 		$post_types = $this->get_setting('post_types');
 		?>
-		<input name="cf_popup_settings[post_types]" value="<?php echo esc_attr($post_types); ?>" type="text" placeholder="any" />
+		<input name="cf_popup_settings[post_types]" class="js_hide_on_never" value="<?php echo esc_attr($post_types); ?>" type="text" placeholder="any" />
 		<p class="help">Post Types separated by comma.  Leave empty for any post type.  (e.g., post, page, etc.)</p>
-		<?php
-	}
-	public function show_popup_cookie_field() {
-		$settings = $this->get_settings();
-		$cookie_name = 'cf_popup';
-		if (!empty($settings['cookie_name'])) {
-			$cookie_name = $settings['cookie_name'];
-		}
-		?>
-		<input name="cf_popup_settings[cookie_name]" value="<?php echo esc_attr($cookie_name); ?>">
-		<?php
-	}
-	public function show_popup_onlinkclick_field() {
-		$$on_link_click = $this->get_setting('on_link_click');
-		?>
-		<input type="checkbox" name="cf_popup_settings[on_link_click]" id="cf_popup_settings_onlinkclick" value="1"<?php checked(1, $$on_link_click); ?> /> <label for="cf_popup_settings_onlinkclick">Display on any <?php echo esc_html(home_url()); ?> link click?</label>
-		<p class="help">Displays the popup when a visitor clicks a link within the <?php echo esc_html(home_url()); ?> domain.</p>
 		<?php
 	}
 	public function show_popup_debug_field() {
 		$debug = $this->get_setting('debug');
 		?>
-		<input type="checkbox" name="cf_popup_settings[debug]" id="cf_popup_settings_debug" value="1"<?php checked(1, $debug); ?> /> <label for="cf_popup_settings_debug">Debug?</label>
+		<input type="checkbox" name="cf_popup_settings[debug]" id="cf_popup_settings_debug" class="js_hide_on_never" value="1"<?php checked(1, $debug); ?> /> <label for="cf_popup_settings_debug">Debug?</label>
 		<p class="help">Ignore the cookie entirely, and show popup at each interaction</p>
 		<?php
 	}

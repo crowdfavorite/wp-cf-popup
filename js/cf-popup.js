@@ -5,15 +5,19 @@
 	}
 	cfPopup = {
 		showWhen : _cfPopup.showWhen,
-		interval : parseInt(_cfPopup.interval, 10), // in days
+		waitTime : _cfPopup.waitTime ? Math.abs(parseInt(_cfPopup.waitTime, 10)) : 0, // in seconds
+		secondaryWaitTime : _cfPopup.secondaryWaitTime ? Math.abs(parseInt(_cfPopup.secondaryWaitTime, 10)) : 0, // in seconds
+		interval : Math.abs(parseInt(_cfPopup.interval, 10)), // in days
 		pages : $.trim(_cfPopup.pages) == '' ? [] : _cfPopup.pages.split(','),
 		categories : $.trim(_cfPopup.categories) == '' ? [] : _cfPopup.categories.split(','),
 		postTypes : $.trim(_cfPopup.postTypes) == '' ? [] : _cfPopup.postTypes.split(','),
 		hiddenDiv : $('#js-cfpopup-content'),
-		cookieName : _cfPopup.cookieName,
-		debug : parseInt(_cfPopup.debug, 10),
-		doPopupOnLinkClick : parseInt(_cfPopup.popupOnLinkClick, 10),
+		cookieName : 'cf_popup_shown',
+		clickedAwayCookieName : 'cf_popup_clickedaway',
+		debug : Math.abs(parseInt(_cfPopup.debug, 10)),
+		doPopupOnLinkClick : Math.abs(parseInt(_cfPopup.popupOnLinkClick, 10)),
 		domain : _cfPopup.domain,
+		width : Math.abs(parseInt(_cfPopup.width, 10)),
 		hasCookiePlugin : function() {
 			return (typeof($.cookie) === 'function');
 		},
@@ -21,13 +25,37 @@
 			return ($.cookie(cfPopup.cookieName) === '1');
 		},
 		setPopupCookie : function() {
-			$.cookie(cfPopup.cookieName, '1', { expires: cfPopup.interval, path: '/' });
+			$.cookie(
+				cfPopup.cookieName,
+				'1',
+				{
+					expires: cfPopup.interval,
+					path: '/'
+				}
+			);
+		},
+		hasClickedAwayCookie : function() {
+			return ($.cookie(cfPopup.clickedAwayCookieName) === '1');
+		},
+		setClickedAwayCookie : function() {
+			$.cookie(
+				cfPopup.clickedAwayCookieName,
+				'1',
+				{
+					expires: cfPopup.interval,
+					path: '/'
+				}
+			);
 		},
 		showPopup : function() {
-			$.colorbox({
+			var options = {
 				html : cfPopup.hiddenDiv.data('content'),
 				overlayClose : false
-			});
+			};
+			if (cfPopup.width) {
+				options.width = Math.abs(parseInt(cfPopup.width, 10));
+			}
+			$.colorbox(options);
 		},
 		maybeShowPopup : function() {
 			if (!cfPopup.hasPopupCookie() || cfPopup.debug) {
@@ -74,30 +102,62 @@
 			}
 
 			return r;
+		},
+		getWaitTime : function() {
+			return cfPopup.waitTime;
+		},
+		getSecondaryWaitTime : function() {
+			return cfPopup.secondaryWaitTime;
+		},
+		setTimer : function() {
+			cfPopup.timer = window.setTimeout(
+				cfPopup.maybeShowPopup,
+				cfPopup.getWaitTime() * 1000
+			);
+		},
+		setSecondaryTimer : function() {
+			cfPopup.secondaryTimer = window.setTimeout(
+				cfPopup.maybeShowPopup,
+				cfPopup.getSecondaryWaitTime() * 1000
+			);
+		},
+		attachClickedAwayEvents : function() {
+			$(document).on('click', 'a', cfPopup.handleClickedAway);
+		},
+		handleClickedAway : function(e) {
+			e.preventDefault();
+			cfPopup.setClickedAwayCookie();
+			document.location = $(this).attr('href');
+		},
+		init : function() {
+			var n = cfPopup;
+			if (!n.hasCookiePlugin() || n.showWhen == 'never' || !n.showOnThisPage()) {
+				return;
+			}
+
+			if (n.showWhen == 'enter') {
+				if (n.hasClickedAwayCookie()) {
+					n.setSecondaryTimer();
+				}
+				else {
+					n.setTimer();
+					n.attachClickedAwayEvents();
+				}
+			}
+			else if (n.showWhen == 'exit') {
+				$(document).mouseleave(n.maybeShowPopup);
+			}
+			else if (n.showWhen == 'link_click') {
+				$(document).one('click', 'a', function(e) {
+					n.maybeShowPopup();
+					e.preventDefault();
+					return false;
+				});
+			}
 		}
 	};
 
-	$(function() {
-		var n = cfPopup;
-		if (!n.hasCookiePlugin() || n.showWhen == 'never' || !n.showOnThisPage()) {
-			return;
-		}
-
-		if (n.showWhen == 'enter') {
-			n.maybeShowPopup();
-		}
-		else if (n.showWhen == 'exit') {
-			$(document).mouseleave(n.maybeShowPopup);
-		}
-
-		if (n.doPopupOnLinkClick) {
-			$(document).one('click', 'a[href*="' + n.domain + '"]', function(e) {
-				n.maybeShowPopup();
-				e.preventDefault();
-				return false;
-			});
-		}
-	});
+	$(cfPopup.init());
 
 
 })(jQuery);
