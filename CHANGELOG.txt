@@ -1,6 +1,6 @@
 # CF Popup Plugin CHANGELOG
 
-## 0.4 (in progress)
+## 0.4
 
 - Delay timers implemented.  Both for initial page load, and a secondary one in case a user clicks away before the first one displays.
 - Changed link clicking to be it's own "show where", so the options are now "enter", "exit", "link_click".  This is instead of having link click be its own special case during enter or exit.
