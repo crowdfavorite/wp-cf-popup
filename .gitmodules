@@ -1,3 +1,3 @@
 [submodule "js/colorbox"]
 	path = js/colorbox
-	url = git@github.com:jackmoore/colorbox.git
+	url = https://github.com/jackmoore/colorbox.git
